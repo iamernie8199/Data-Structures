@@ -59,20 +59,24 @@ class background():
                     check = 1
                     continue
                 if self.matrix[i - 1 + k][index + j]:
-                    print(i)
                     if block.shift != 0 and not shifted:
+                        # 判斷橫移合法性
+                        if index + block.shift > self.w - 1 or block.shift + index + len(block.shape[0]) > self.w - 1:
+                            return 1
+                        for n in range(1, block.shift):
+                            if self.matrix[i][index + n]:
+                                return 1
+                        # 更新index
                         index += block.shift
                         shifted = 1
                         break
                     elif len(block.shape) + i > self.h - 1:
-                        print("GG")
                         return 1
                     else:
                         for z in range(len(block.shape)):
                             for x in range(len(block.shape[0])):
                                 if block.shape[z][x]:
                                     self.matrix[i + z][index + x] = block.shape[z][x]
-
                         return 0
                 elif i == 0:
                     if block.shift != 0 and shifted == 0:
@@ -85,15 +89,12 @@ class background():
                             for x in range(len(block.shape[0])):
                                 if block.shape[z][x]:
                                     self.matrix[i + z][index + x] = block.shape[z][x]
-
                     return 0
                 elif k == block.bottom[-1][0] and j == block.bottom[-1][1]:
                     check = 1
             if check:
                 i -= 1
                 check = 0
-        self.out()
-
 
 block_list = {
     "T1": [[0, 1, 0], [1, 1, 1]],
@@ -132,6 +133,7 @@ for i in range(1, len(data)):
     print(data[i])
     b = block(int(data[i][1]), int(data[i][2]), block_list[data[i][0]])
     e = g1.new(b)
-    if e: break
+    if e:
+        print("GG")
+        break
     g1.refresh()
-    print("--------------------")
