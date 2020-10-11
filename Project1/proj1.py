@@ -3,24 +3,23 @@ class block:
         self.x = x
         self.shift = y
         self.shape = shape
-
-    def bottom(self):
         tmp = []
         i = 0
-        for j in range(len(self.shape[0])):
+        for j in range(len(shape[0])):
             while True:
-                if self.shape[i][j]:
+                if shape[i][j]:
                     tmp.append([i, j])
                     break
                 else:
                     i += 1
-        return tmp
+        self.bottom = tmp
 
 
 class background():
     def __init__(self, m, n):
         self.h = m
         self.w = n
+        # 以m*n矩陣儲存
         self.matrix = [[0 for _ in range(n)] for _ in range(m)]
 
     def out(self):
@@ -29,7 +28,6 @@ class background():
             for j in range(self.w):
                 print(self.matrix[i][j], end=' ')
             print()
-        print("## ##########")
         print(f"X | ", end="")
         for k in range(self.w):
             print(k, end=" ")
@@ -51,47 +49,47 @@ class background():
 
     def new(self, block):
         index = block.x - 1
-        i = self.h - 1
-        #i = self.h - 1 - len(block.shape)
+        i = self.h
         shifted = 0
+        check = 0
         while i >= 0:
-            """
-            for k, j in block.bottom():
-                if self.matrix[i+k][index + j]:
+            for k, j in block.bottom:
+                if i - 1 + k > self.h - 1:
+                    check = 1
+                    continue
+                if self.matrix[i - 1 + k][index + j]:
                     if block.shift != 0 and not shifted:
                         index += block.shift
                         shifted = 1
                         break
-            """
-            for j in range(len(block.shape[0])):
-                if self.matrix[i][index + j] and block.shape[0][j]:
-                    if block.shift != 0 and not shifted:
-                        index += block.shift
-                        shifted = 1
-                        break
-                    elif i == self.h - 1 or i + len(block.shape) > self.h - 1:
+                    elif len(block.shape) + i > self.h - 1:
                         print("GG")
-                        i = -1
                         return 1
                     else:
-                        for k in range(len(block.shape)):
-                            self.matrix[i + 1 + k][index:index + len(block.shape[0])] = block.shape[k]
-                        i = -1
-                elif block.shape[0][j] == 0:
-                    if self.matrix[i][index + j] and block.shape[1][j]:
-                        if block.shift != 0 and not shifted:
-                            index += block.shift
-                            shifted = 1
-                            break
-                        else:
-                            for k in range(len(block.shape)):
-                                self.matrix[i + k][index:index + len(block.shape[0])] = block.shape[k]
-                            i = -1
-                if j == len(block.shape[0]) - 1:
-                    if i == 0:
-                        for k in range(len(block.shape)):
-                            self.matrix[i + k][index:index + len(block.shape[0])] = block.shape[k]
-                    i -= 1
+                        for z in range(len(block.shape)):
+                            for x in range(len(block.shape[0])):
+                                if block.shape[z][x]:
+                                    self.matrix[i + z][index + x] = block.shape[z][x]
+
+                        return 0
+                elif i == 0:
+                    if block.shift != 0 and shifted == 0:
+                        for z in range(len(block.shape)):
+                            for x in range(len(block.shape[0])):
+                                if block.shape[z][x]:
+                                    self.matrix[i + z][index + block.shift + x] = block.shape[z][x]
+                    else:
+                        for z in range(len(block.shape)):
+                            for x in range(len(block.shape[0])):
+                                if block.shape[z][x]:
+                                    self.matrix[i + z][index + x] = block.shape[z][x]
+
+                    return 0
+                elif k == block.bottom[-1][0] and j == block.bottom[-1][1]:
+                    check = 1
+            if check:
+                i -= 1
+                check = 0
         self.out()
 
 
@@ -118,16 +116,16 @@ block_list = {
 }
 
 data = []
-f = open(r'data.txt')
+f = open(r'2.data')
 for line in f:
     data.append(line[:-1])
 f.close()
 data.pop()
-data = [d.split('\t') for d in data]
+data = [d.split(' ') for d in data]
 
 g1 = background(int(data[0][0]), int(data[0][1]))
-g1.refresh()
 for i in range(1, len(data)):
+    print(data[i])
     b = block(int(data[i][1]), int(data[i][2]), block_list[data[i][0]])
     e = g1.new(b)
     if e: break
