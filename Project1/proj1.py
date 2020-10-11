@@ -9,6 +9,7 @@ class block:
             while True:
                 if shape[i][j]:
                     tmp.append([i, j])
+                    i = 0
                     break
                 else:
                     i += 1
@@ -58,6 +59,7 @@ class background():
                     check = 1
                     continue
                 if self.matrix[i - 1 + k][index + j]:
+                    print(i)
                     if block.shift != 0 and not shifted:
                         index += block.shift
                         shifted = 1
@@ -125,6 +127,8 @@ data = [d.split(' ') for d in data]
 
 g1 = background(int(data[0][0]), int(data[0][1]))
 for i in range(1, len(data)):
+    if data[i][0] == 'End':
+        break
     print(data[i])
     b = block(int(data[i][1]), int(data[i][2]), block_list[data[i][0]])
     e = g1.new(b)
