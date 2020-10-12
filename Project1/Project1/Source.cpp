@@ -6,6 +6,7 @@
 using namespace std;
 
 class block {
+	friend class background;
 private:
 	int x;
 	int shift;
@@ -40,7 +41,7 @@ public:
 class background {
 public:
 	background(int m, int n) : h(m), w(n) {
-		vector<vector<int>> tmp(m, vector<int>(n,1));
+		vector<vector<int>> tmp(m, vector<int>(n));
 		matrix = tmp;
 	}
 	~background() {
@@ -74,6 +75,39 @@ public:
 				break;
 		}
 	}
+	bool newblock(block* b) {
+		int index = b->x - 1;
+		int i = h;
+		bool shifted = false;
+		bool check = false;
+		vector<vector<int>> bottom = b->bottom;
+		int bottomsize = bottom.size();
+		while (i >= 0) {
+			for (int k = 0; k < bottomsize; k++) {
+				int below = i - 1 + bottom[k][0];
+				int cur = index + bottom[k][1];
+				if (below > h - 1) {
+					check = true;
+					continue;
+				}
+				else if (matrix[below][cur] > 0) {
+					if (b->shift != 0 and !shifted) {
+						// 判斷橫移合法性
+						if (index + b->shift > w - 1 || index + b->shift + b->shape[0].size() > w - 1)
+							return 1;
+						for (int n = 1; n < b->shift; n++) {
+							if (matrix[i][index + n] > 0)
+								return 1;
+						}
+						// 更新index
+						index += b->shift;
+						shifted = true;
+						break;
+					}
+				}
+			}
+		}
+	}
 
 private:
 	int h;
@@ -89,10 +123,7 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 	background b = background(7, 5);
-	b.out();
-	cout << "-----------------" << endl;
 	b.refresh();
 	b.out();
-	cout << "-----------------" << endl;
 	Infile.close();
 }
