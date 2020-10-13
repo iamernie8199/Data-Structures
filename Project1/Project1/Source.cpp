@@ -95,7 +95,7 @@ public:
 					matrix.push_back(null);
 					break;
 				}
-				else if (i == h - 1) {
+				else if (matrix[i] == null || i == h - 1) {
 					check = true;
 					break;
 				}
