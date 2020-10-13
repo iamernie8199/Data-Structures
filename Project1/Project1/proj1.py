@@ -63,6 +63,7 @@ class background():
                     if block.shift != 0 and not shifted:
                         # 判斷橫移合法性
                         if index + block.shift > self.w - 1 or block.shift + index + len(block.shape[0])-1 > self.w - 1:
+                            print("!")
                             return 1
                         for n in range(1, block.shift+1):
                             if self.matrix[i][index + n]:
