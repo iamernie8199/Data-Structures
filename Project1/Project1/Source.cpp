@@ -12,13 +12,15 @@ private:
 	int shift;
 	vector<vector<int>> shape;
 	vector<vector<int>> bottom;
+	vector<vector<int>> l;
+	vector<vector<int>> r;
 public:
-	block(int x, int y, vector<vector<int>> shape) :x(x), shift(y), shape(shape) {
-		int i = 0;
-		int shapelen = shape[0].size();
-		for (int j = 0; j < shapelen; j++) {
+	block(int x, int y, vector<vector<int>> s) :x(x), shift(y), shape(s) {
+		int shapew = s[0].size();
+		int shapeh = s.size();
+		for (int j = 0, i = 0; j < shapew; j++) {
 			while (true) {
-				if (shape[i][j] > 0) {
+				if (s[i][j] > 0) {
 					int tmp[] = { i,j };
 					vector<int> v1;
 					v1.assign(tmp, tmp + 2);
@@ -30,7 +32,34 @@ public:
 					i++;
 			}
 		}
-
+		for (int i = 0, j = 0; i < shapeh; i++) {
+			while (true) {
+				if (s[i][j] > 0) {
+					int tmp[] = { i,j };
+					vector<int> v1;
+					v1.assign(tmp, tmp + 2);
+					l.push_back(v1);
+					j = 0;
+					break;
+				}
+				else
+					j++;
+			}
+		}
+		for (int i = 0, j = shapew - 1; i < shapeh; i++) {
+			while (true) {
+				if (s[i][j] > 0) {
+					int tmp[] = { i,j };
+					vector<int> v1;
+					v1.assign(tmp, tmp + 2);
+					r.push_back(v1);
+					j = shapew - 1;
+					break;
+				}
+				else
+					j--;
+			}
+		}
 	}
 	~block() {
 		vector<vector<int>>().swap(shape);
@@ -101,9 +130,6 @@ public:
 						shifted = true;
 						break;
 					}
-					else if (b.shape.size() + i > h - 1) {
-						return 1;
-					}
 					else {
 						for (int z = 0; z < b.shape.size(); z++) {
 							for (int x = 0; x < b.shape[0].size(); x++) {
@@ -157,17 +183,12 @@ private:
 	vector<vector<int>> matrix;
 };
 
-void build(vector<vector<int>>& vec, string type)
-{
-	vector<vector<int>> tmp{ { 1, 1, 1 },{ 2, 2, 2 } };
-	vec = tmp;
-}
 
 int main(int argc, char* argv[]) {
 	FILE* solution_file;
 	solution_file = fopen("108065515_proj1.final", "w");
 	fstream input;
-	input.open("3.data", ios::in);
+	input.open("108065515.data", ios::in);
 
 	string line;
 	int m, n;
@@ -223,6 +244,7 @@ int main(int argc, char* argv[]) {
 			game.refresh();
 		}
 		input.close();
+		cout << "Final:" << endl;
 		game.out();
 	}
 }
