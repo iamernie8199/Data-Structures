@@ -143,6 +143,13 @@ public:
 			}
 		}
 	}
+	bool check() {
+		vector<int> null(w, 0);
+		if (matrix[h] != null)
+			return 1;
+		else
+			return 0;
+	}
 
 private:
 	int h;
@@ -206,8 +213,9 @@ int main(int argc, char* argv[]) {
 			cout << type << "\t" << index << "\t" << shift << endl;
 			blocktype = block_list[type];
 			block b = block(index, shift, blocktype);
-			bool e = game.newblock(b);
-			if (e) {
+			bool e1 = game.newblock(b);
+			bool e2 = game.check();
+			if (e1 || e2) {
 				cout << "GG" << endl;
 				break;
 			}
