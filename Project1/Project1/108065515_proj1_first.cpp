@@ -210,7 +210,7 @@ int main(int argc, char* argv[]) {
 	fstream input;
 	fstream output;
 	input.open("108065515_proj1.data", ios::in);
-	//input.open(argv[], ios::in);
+	//input.open(argv[1], ios::in);
 	output.open("108065515_proj1.final", ios::out);
 	string line;
 	int m, n;
@@ -249,7 +249,6 @@ int main(int argc, char* argv[]) {
 		input >> m >> n;
 		background game = background(m, n);
 		int top = 0;
-		bool e1 = 0, e2 = 0;
 		while (getline(input, line)) {
 			input >> type >> index >> shift;
 			if (!type.compare("End"))
@@ -257,9 +256,9 @@ int main(int argc, char* argv[]) {
 			//cout << type << "\t" << index << "\t" << shift << endl;
 			blocktype = block_list[type];
 			block b = block(index, shift, blocktype);
-			e1 = game.newblock(b, top);
+			bool e1 = game.newblock(b, top);
 			top = game.refresh();
-			e2 = game.check();
+			bool e2 = game.check();
 			if (e1 || e2) {
 				cout << "GG" << endl;
 				return 1;
