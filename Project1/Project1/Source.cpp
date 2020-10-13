@@ -118,12 +118,27 @@ public:
 				int cur = index + bottom[k][1];
 				if (matrix[below][cur] > 0) {
 					if (b.shift != 0 and !shifted) {
-						// 判斷橫移合法性
+						// 判斷橫移是否超出邊界
 						if (index + b.shift > w - 1 || index + b.shift + b.shape[0].size() - 1 > w - 1)
 							return 1;
-						for (int n = 1; n <= b.shift; n++) {
-							if (matrix[i][index + n] > 0)
-								return 1;
+						// 判斷橫移是否會撞到障礙
+						// 右
+						if (b.shift > 0) {
+							for (int n = 1; n <= b.shift; n++) {
+								for (int r = 0; r < b.r.size();r++) {
+									if (matrix[i + b.r[r][0]][index + n + b.r[r][1]] > 0)
+										return 1;
+								}
+							}
+						}
+						// 左
+						else {
+							for (int n = 1; n <= abs(b.shift); n++) {
+								for (int l = 0; l < b.l.size();l++) {
+									if (matrix[i + b.l[l][0]][index - n + b.l[l][1]] > 0)
+										return 1;
+								}
+							}
 						}
 						// 更新index
 						index += b.shift;
@@ -188,8 +203,8 @@ int main(int argc, char* argv[]) {
 	FILE* solution_file;
 	solution_file = fopen("108065515_proj1.final", "w");
 	fstream input;
-	input.open("108065515.data", ios::in);
-
+	input.open("108065515_proj1.data", ios::in);
+	//input.open(argv[], ios::in);
 	string line;
 	int m, n;
 	string type;
