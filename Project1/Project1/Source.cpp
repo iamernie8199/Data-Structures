@@ -18,6 +18,7 @@ public:
 	block(int x, int y, vector<vector<int>> s) :x(x), shift(y), shape(s) {
 		int shapew = s[0].size();
 		int shapeh = s.size();
+		// ©³
 		for (int j = 0, i = 0; j < shapew; j++) {
 			while (true) {
 				if (s[i][j] > 0) {
@@ -32,6 +33,7 @@ public:
 					i++;
 			}
 		}
+		// ¥ª
 		for (int i = 0, j = 0; i < shapeh; i++) {
 			while (true) {
 				if (s[i][j] > 0) {
@@ -46,6 +48,7 @@ public:
 					j++;
 			}
 		}
+		// ¥k
 		for (int i = 0, j = shapew - 1; i < shapeh; i++) {
 			while (true) {
 				if (s[i][j] > 0) {
@@ -84,7 +87,7 @@ public:
 			cout << endl;
 		}
 	}
-	void refresh() {
+	int refresh() {
 		bool check = false;
 		vector<int> full(w, 1);
 		vector<int> null(w, 0);
@@ -97,16 +100,16 @@ public:
 				}
 				else if (matrix[i] == null || i == h - 1) {
 					check = true;
-					break;
+					return i;
 				}
 			}
 			if (check)
 				break;
 		}
 	}
-	bool newblock(block b) {
+	bool newblock(block b, int top) {
 		int index = b.x - 1;
-		int i = h;
+		int i = top;
 		bool shifted = false;
 		bool check = false;
 		vector<vector<int>> bottom = b.bottom;
@@ -241,6 +244,7 @@ int main(int argc, char* argv[]) {
 	else {
 		input >> m >> n;
 		background game = background(m, n);
+		int top=0;
 		while (getline(input, line)) {
 			input >> type >> index >> shift;
 			if (!type.compare("End")) {
@@ -249,14 +253,14 @@ int main(int argc, char* argv[]) {
 			cout << type << "\t" << index << "\t" << shift << endl;
 			blocktype = block_list[type];
 			block b = block(index, shift, blocktype);
-			bool e1 = game.newblock(b);
+			bool e1 = game.newblock(b, top);
 			bool e2 = game.check();
 			if (e1 || e2) {
 				cout << "GG" << endl;
 				break;
 			}
+			top = game.refresh();
 			game.out();
-			game.refresh();
 		}
 		input.close();
 		cout << "Final:" << endl;
