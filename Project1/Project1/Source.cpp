@@ -41,7 +41,7 @@ public:
 class background {
 public:
 	background(int m, int n) : h(m), w(n) {
-		vector<vector<int>> tmp(m+4, vector<int>(n));
+		vector<vector<int>> tmp(m + 4, vector<int>(n));
 		matrix = tmp;
 	}
 	~background() {
@@ -83,7 +83,6 @@ public:
 		vector<vector<int>> bottom = b.bottom;
 		int bottomsize = bottom.size();
 		while (i >= 0) {
-			cout << i << endl;
 			for (int k = 0; k < bottomsize; k++) {
 				int below = i - 1 + bottom[k][0];
 				below = (below >= 0) ? below : 0;
@@ -91,9 +90,9 @@ public:
 				if (matrix[below][cur] > 0) {
 					if (b.shift != 0 and !shifted) {
 						// §PÂ_¾î²¾¦Xªk©Ê
-						if (index + b.shift > w - 1 || index + b.shift + b.shape[0].size() > w - 1)
+						if (index + b.shift > w - 1 || index + b.shift + b.shape[0].size() - 1 > w - 1)
 							return 1;
-						for (int n = 1; n < b.shift; n++) {
+						for (int n = 1; n <= b.shift; n++) {
 							if (matrix[i][index + n] > 0)
 								return 1;
 						}
@@ -161,7 +160,7 @@ int main(int argc, char* argv[]) {
 	FILE* solution_file;
 	solution_file = fopen("108065515_proj1.final", "w");
 	fstream input;
-	input.open("1.data", ios::in);
+	input.open("3.data", ios::in);
 
 	string line;
 	int m, n;
