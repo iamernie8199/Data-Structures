@@ -18,7 +18,7 @@ public:
 	block(int x, int y, vector<vector<int>> s) :x(x), shift(y), shape(s) {
 		int shapew = s[0].size();
 		int shapeh = s.size();
-		// ��
+		// 底
 		for (int j = 0, i = 0; j < shapew; j++) {
 			while (true) {
 				if (s[i][j] > 0) {
@@ -33,7 +33,7 @@ public:
 					i++;
 			}
 		}
-		// ��
+		// 左
 		for (int i = 0, j = 0; i < shapeh; i++) {
 			while (true) {
 				if (s[i][j] > 0) {
@@ -48,7 +48,7 @@ public:
 					j++;
 			}
 		}
-		// �k
+		// 右
 		for (int i = 0, j = shapew - 1; i < shapeh; i++) {
 			while (true) {
 				if (s[i][j] > 0) {
@@ -126,11 +126,11 @@ public:
 				if (cur > w-1) return 1;
 				if (matrix[below][cur] > 0) {
 					if (b.shift != 0 && !shifted) {
-						// �P�_��O�_�W�X���
+						// 判斷橫移是否超出邊界
 						if (index + b.shift > w - 1 || index + b.shift + b.shape[0].size() - 1 > w - 1)
 							return 1;
-						// �P�_��O�_�|�����ê
-						// �k
+						// 判斷橫移是否會撞到障礙
+						// 右
 						if (b.shift > 0) {
 							for (int n = 1; n <= b.shift; n++) {
 								for (int r = 0; r < b.r.size();r++) {
@@ -139,7 +139,7 @@ public:
 								}
 							}
 						}
-						// ��
+						// 左
 						else {
 							for (int n = 1; n <= abs(b.shift); n++) {
 								for (int l = 0; l < b.l.size();l++) {
@@ -148,7 +148,7 @@ public:
 								}
 							}
 						}
-						// ��sindex
+						// 更新index
 						index += b.shift;
 						shifted = true;
 						break;
@@ -210,8 +210,8 @@ private:
 int main(int argc, char* argv[]) {
 	fstream input;
 	fstream output;
-	input.open("108065515_proj1.data", ios::in);
-	//input.open(argv[1], ios::in);
+	//input.open("108065515_proj1.data", ios::in);
+	input.open(argv[1], ios::in);
 	output.open("108065515_proj1.final", ios::out);
 	string line;
 	int m, n;
@@ -220,7 +220,7 @@ int main(int argc, char* argv[]) {
 
 	vector<vector<int>> blocktype;
 
-	// �إ߹�Ӫ�
+	// 對照表
 	map<string, vector<vector<int>>> block_list;
 	block_list["T1"] = { {0,1,0},{1,1,1} };
 	block_list["T2"] = { {0,1},{1,1},{0,1} };
