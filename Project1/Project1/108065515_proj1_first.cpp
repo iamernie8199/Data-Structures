@@ -18,7 +18,7 @@ public:
 	block(int x, int y, vector<vector<int>> s) :x(x), shift(y), shape(s) {
 		int shapew = s[0].size();
 		int shapeh = s.size();
-		// ©³
+		// ï¿½ï¿½
 		for (int j = 0, i = 0; j < shapew; j++) {
 			while (true) {
 				if (s[i][j] > 0) {
@@ -33,7 +33,7 @@ public:
 					i++;
 			}
 		}
-		// ¥ª
+		// ï¿½ï¿½
 		for (int i = 0, j = 0; i < shapeh; i++) {
 			while (true) {
 				if (s[i][j] > 0) {
@@ -48,7 +48,7 @@ public:
 					j++;
 			}
 		}
-		// ¥k
+		// ï¿½k
 		for (int i = 0, j = shapew - 1; i < shapeh; i++) {
 			while (true) {
 				if (s[i][j] > 0) {
@@ -123,13 +123,14 @@ public:
 				int below = i - 1 + bottom[k][0];
 				below = (below >= 0) ? below : 0;
 				int cur = index + bottom[k][1];
+				if (cur > w-1) return 1;
 				if (matrix[below][cur] > 0) {
-					if (b.shift != 0 and !shifted) {
-						// §PÂ_¾î²¾¬O§_¶W¥XÃä¬É
+					if (b.shift != 0 && !shifted) {
+						// ï¿½Pï¿½_ï¿½î²¾ï¿½Oï¿½_ï¿½Wï¿½Xï¿½ï¿½ï¿½
 						if (index + b.shift > w - 1 || index + b.shift + b.shape[0].size() - 1 > w - 1)
 							return 1;
-						// §PÂ_¾î²¾¬O§_·|¼²¨ì»ÙÃª
-						// ¥k
+						// ï¿½Pï¿½_ï¿½î²¾ï¿½Oï¿½_ï¿½|ï¿½ï¿½ï¿½ï¿½ï¿½Ãª
+						// ï¿½k
 						if (b.shift > 0) {
 							for (int n = 1; n <= b.shift; n++) {
 								for (int r = 0; r < b.r.size();r++) {
@@ -138,7 +139,7 @@ public:
 								}
 							}
 						}
-						// ¥ª
+						// ï¿½ï¿½
 						else {
 							for (int n = 1; n <= abs(b.shift); n++) {
 								for (int l = 0; l < b.l.size();l++) {
@@ -147,7 +148,7 @@ public:
 								}
 							}
 						}
-						// §ó·sindex
+						// ï¿½ï¿½sindex
 						index += b.shift;
 						shifted = true;
 						break;
@@ -163,7 +164,7 @@ public:
 					}
 				}
 				else if (i == 0) {
-					if (b.shift != 0 and !shifted) {
+					if (b.shift != 0 && !shifted) {
 						for (int z = 0; z < b.shape.size(); z++) {
 							for (int x = 0; x < b.shape[0].size(); x++) {
 								if (b.shape[z][x] > 0)
@@ -219,7 +220,7 @@ int main(int argc, char* argv[]) {
 
 	vector<vector<int>> blocktype;
 
-	// «Ø¥ß¹ï·Óªí
+	// ï¿½Ø¥ß¹ï¿½Óªï¿½
 	map<string, vector<vector<int>>> block_list;
 	block_list["T1"] = { {0,1,0},{1,1,1} };
 	block_list["T2"] = { {0,1},{1,1},{0,1} };
