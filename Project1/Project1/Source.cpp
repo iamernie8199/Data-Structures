@@ -79,11 +79,17 @@ public:
 	~background() {
 		vector<vector<int>>().swap(matrix);
 	};
-	void out() {
+	void out(fstream& fout) {
 		for (int i = h - 1; i > -1; i--) {
 			for (int j = 0; j < w;j++) {
+				fout << matrix[i][j];
 				cout << matrix[i][j];
+				if (j != w - 1){
+					cout << " ";
+					fout << " ";
+				}
 			}
+			fout << endl;
 			cout << endl;
 		}
 	}
@@ -103,8 +109,6 @@ public:
 					return i;
 				}
 			}
-			if (check)
-				break;
 		}
 	}
 	bool newblock(block b, int top) {
@@ -203,11 +207,11 @@ private:
 
 
 int main(int argc, char* argv[]) {
-	FILE* solution_file;
-	solution_file = fopen("108065515_proj1.final", "w");
 	fstream input;
+	fstream output;
 	input.open("108065515_proj1.data", ios::in);
 	//input.open(argv[], ios::in);
+	output.open("108065515_proj1.final", ios::out);
 	string line;
 	int m, n;
 	string type;
@@ -250,7 +254,7 @@ int main(int argc, char* argv[]) {
 			if (!type.compare("End")) {
 				break;
 			}
-			cout << type << "\t" << index << "\t" << shift << endl;
+			//cout << type << "\t" << index << "\t" << shift << endl;
 			blocktype = block_list[type];
 			block b = block(index, shift, blocktype);
 			bool e1 = game.newblock(b, top);
@@ -260,11 +264,11 @@ int main(int argc, char* argv[]) {
 				break;
 			}
 			top = game.refresh();
-			game.out();
+			//game.out();
 		}
 		input.close();
 		cout << "Final:" << endl;
-		game.out();
+		game.out(output);
 	}
 }
 
