@@ -84,7 +84,7 @@ public:
 			for (int j = 0; j < w;j++) {
 				fout << matrix[i][j];
 				cout << matrix[i][j];
-				if (j != w - 1){
+				if (j != w - 1) {
 					cout << " ";
 					fout << " ";
 				}
@@ -248,27 +248,30 @@ int main(int argc, char* argv[]) {
 	else {
 		input >> m >> n;
 		background game = background(m, n);
-		int top=0;
+		int top = 0;
+		bool e1 = 0, e2 = 0;
 		while (getline(input, line)) {
 			input >> type >> index >> shift;
-			if (!type.compare("End")) {
+			if (!type.compare("End"))
 				break;
-			}
 			//cout << type << "\t" << index << "\t" << shift << endl;
 			blocktype = block_list[type];
 			block b = block(index, shift, blocktype);
-			bool e1 = game.newblock(b, top);
-			bool e2 = game.check();
+			e1 = game.newblock(b, top);
+			top = game.refresh();
+			e2 = game.check();
 			if (e1 || e2) {
 				cout << "GG" << endl;
-				break;
+				return 1;
 			}
-			top = game.refresh();
 			//game.out();
 		}
 		input.close();
 		cout << "Final:" << endl;
 		game.out(output);
+		output.close();
+
+		return 0;
 	}
 }
 
