@@ -93,8 +93,8 @@ public:
 			cout << endl;
 		}
 	}
+
 	int refresh() {
-		bool check = false;
 		vector<int> full(w, 1);
 		vector<int> null(w, 0);
 		while (true) {
@@ -104,10 +104,8 @@ public:
 					matrix.push_back(null);
 					break;
 				}
-				else if (matrix[i] == null || i == h - 1) {
-					check = true;
+				else if (matrix[i] == null || i == h - 1)
 					return i;
-				}
 			}
 		}
 	}
@@ -124,6 +122,7 @@ public:
 				below = (below >= 0) ? below : 0;
 				int cur = index + bottom[k][1];
 				if (cur > w-1) return 1;
+				if (index + b.shape[0].size() - 1 > w - 1) return 1;
 				if (matrix[below][cur] > 0) {
 					if (b.shift != 0 && !shifted) {
 						// 判斷橫移是否超出邊界
@@ -165,6 +164,28 @@ public:
 				}
 				else if (i == 0) {
 					if (b.shift != 0 && !shifted) {
+						// 判斷橫移是否超出邊界
+						if (index + b.shift > w - 1 || index + b.shift + b.shape[0].size() - 1 > w - 1)
+							return 1;
+						// 判斷橫移是否會撞到障礙
+						// 右
+						if (b.shift > 0) {
+							for (int n = 1; n <= b.shift; n++) {
+								for (int r = 0; r < b.r.size();r++) {
+									if (matrix[i + b.r[r][0]][index + n + b.r[r][1]] > 0)
+										return 1;
+								}
+							}
+						}
+						// 左
+						else {
+							for (int n = 1; n <= abs(b.shift); n++) {
+								for (int l = 0; l < b.l.size();l++) {
+									if (matrix[i + b.l[l][0]][index - n + b.l[l][1]] > 0)
+										return 1;
+								}
+							}
+						}
 						for (int z = 0; z < b.shape.size(); z++) {
 							for (int x = 0; x < b.shape[0].size(); x++) {
 								if (b.shape[z][x] > 0)
@@ -210,8 +231,8 @@ private:
 int main(int argc, char* argv[]) {
 	fstream input;
 	fstream output;
-	//input.open("108065515_proj1.data", ios::in);
-	input.open(argv[1], ios::in);
+	input.open("data/testcase (2).data", ios::in);
+	//input.open(argv[1], ios::in);
 	output.open("108065515_proj1.final", ios::out);
 	string line;
 	int m, n;
@@ -254,7 +275,7 @@ int main(int argc, char* argv[]) {
 			input >> type >> index >> shift;
 			if (!type.compare("End"))
 				break;
-			//cout << type << "\t" << index << "\t" << shift << endl;
+			cout << type << "\t" << index << "\t" << shift << endl;
 			blocktype = block_list[type];
 			block b = block(index, shift, blocktype);
 			bool e1 = game.newblock(b, top);
@@ -264,7 +285,7 @@ int main(int argc, char* argv[]) {
 				cout << "GG" << endl;
 				return 1;
 			}
-			//game.out();
+			game.out(output);
 		}
 		input.close();
 		cout << "Final:" << endl;
