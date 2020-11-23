@@ -184,9 +184,21 @@ public:
 					footprint.push(next);
 					b--;
 				}
+				else {
+					while (deadend(last.top()) && last.size() > 1){
+						footprint.push(last.top());
+						b--;
+						last.pop();
+					}
+				}
 			}
-
+			else {
+				back(path[now->row][now->col], root);
+				b = battery;
+			}
 		}
+		back(path[last.top()->row][last.top()->col], root);
+		cout << "Total: " << steps() << endl;
 	};
 	bool enough(Node* now, int b) {
 		int r = now->row;
@@ -230,7 +242,7 @@ public:
 
 int main(int argc, char* argv[]) {
 	if (argc != 2)
-		input.open("Testcase/1/floor.data", ios::in);
+		input.open("Testcase/2/floor.data", ios::in);
 	else {
 		stringstream strin;
 		strin << argv[1];
