@@ -39,7 +39,7 @@ private:
 	bool** mapb_;
 	Node*** path;
 	stack<Node*> last;
-	queue<Node*> footprint;
+	vector<Node*> footprint;
 	int** efficiency;
 public:
 	Robot(int M, int N, int B, char** input) :row(M), col(N), battery(B) {
@@ -67,7 +67,7 @@ public:
 					efficiency[i][j] = 0;
 
 					last.push(root);
-					footprint.push(root);
+					footprint.push_back(root);
 				}
 				else if (input[i][j] == '1') {
 					map[i][j] = 2;
@@ -122,7 +122,7 @@ public:
 			next = path[U][c];
 			map[U][c] = 1;
 			last.push(next);
-			footprint.push(next);
+			footprint.push_back(next);
 			return 1;
 		}
 		return 0;
@@ -191,15 +191,15 @@ public:
 			if (enough(now, b)) {
 				Node* next;
 
-				if (U >= 0 && !map[U][c]) {next = path[U][c];map[U][c] = 1;last.push(next);footprint.push(next);b--;}
-				else if (L >= 0 && !map[r][L]) { next = path[r][L];map[r][L] = 1;last.push(next);footprint.push(next);b--; }
-				else if (D <= row - 1 && !map[D][c]) {next = path[D][c];map[D][c] = 1;last.push(next);footprint.push(next);b--;}
-				else if (R <= col - 1 && !map[r][R]) {next = path[r][R];map[r][R] = 1;last.push(next);footprint.push(next);b--;}
+				if (U >= 0 && !map[U][c]) {next = path[U][c];map[U][c] = 1;last.push(next);footprint.push_back(next);b--;}
+				else if (L >= 0 && !map[r][L]) { next = path[r][L];map[r][L] = 1;last.push(next);footprint.push_back(next);b--; }
+				else if (D <= row - 1 && !map[D][c]) {next = path[D][c];map[D][c] = 1;last.push(next);footprint.push_back(next);b--;}
+				else if (R <= col - 1 && !map[r][R]) {next = path[r][R];map[r][R] = 1;last.push(next);footprint.push_back(next);b--;}
 
 				// deadend
 				else {
 					while (deadend(last.top()) && last.size() > 1) {
-						footprint.push(last.top());
+						footprint.push_back(last.top());
 						b--;
 						last.pop();
 					}
@@ -227,7 +227,7 @@ public:
 			tmp = tmp->parent;
 		}
 		while (!s.empty()) {
-			footprint.push(s.top());
+			footprint.push_back(s.top());
 			map[s.top()->row][s.top()->col] = 1;
 			last.push(s.top());
 			s.pop();
@@ -280,7 +280,7 @@ public:
 	void back(Node* tmp, Node* root) {
 		while (tmp != root) {
 			tmp = tmp->parent;
-			footprint.push(tmp);
+			footprint.push_back(tmp);
 			map[tmp->row][tmp->col] = 1;
 		}
 	};
@@ -294,10 +294,9 @@ public:
 	};
 	int steps() { return footprint.size() - 1; }
 	void out(ofstream& outFile) {
-		while (!footprint.empty()) {
-			outFile << footprint.front()->row << " " << footprint.front()->col << endl;
-			footprint.pop();
-		}
+		for (int i = 0; i < footprint.size();i++) {
+			outFile << footprint[i]->row << " " << footprint[i]->col << endl;
+		}	
 	};
 };
 
