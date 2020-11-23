@@ -37,6 +37,7 @@ private:
 	bool** mapb; // bool map
 	bool** mapb_;
 	Node*** path;
+	queue<Node*> footprint;
 public:
 	Robot(int M, int N, int B, char** input) :row(M), col(N), battery(B) {
 		/*
@@ -58,6 +59,8 @@ public:
 					map[i][j] = 1;
 					mapb[i][j] = true;
 					root = new Node(i, j, 0);
+
+					footprint.push(root);
 				}
 				else if (input[i][j] == '1') {
 					map[i][j] = 2;
@@ -145,6 +148,12 @@ public:
 			}
 		}
 		return path;
+	};
+	void out(ofstream& outFile) {
+		while (!footprint.empty()) {
+			outFile << footprint.front()->row << " " << footprint.front()->col << endl;
+			footprint.pop();
+		}
 	};
 };
 
