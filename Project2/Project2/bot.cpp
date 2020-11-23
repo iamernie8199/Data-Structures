@@ -187,15 +187,36 @@ public:
 			int r = now->row;
 			int c = now->col;
 			int w = now->distance;
-
 			if (enough(now, b)) {
 				Node* next;
-
-				if (U >= 0 && !map[U][c]) {next = path[U][c];map[U][c] = 1;last.push(next);footprint.push_back(next);b--;}
-				else if (L >= 0 && !map[r][L]) { next = path[r][L];map[r][L] = 1;last.push(next);footprint.push_back(next);b--; }
-				else if (D <= row - 1 && !map[D][c]) {next = path[D][c];map[D][c] = 1;last.push(next);footprint.push_back(next);b--;}
-				else if (R <= col - 1 && !map[r][R]) {next = path[r][R];map[r][R] = 1;last.push(next);footprint.push_back(next);b--;}
-
+				if (U >= 0 && !map[U][c]) {
+					next = path[U][c];
+					map[U][c] = 1;
+					last.push(next);
+					footprint.push_back(next);
+					b--;
+				}
+				else if (L >= 0 && !map[r][L]) { 
+					next = path[r][L];
+					map[r][L] = 1;
+					last.push(next);
+					footprint.push_back(next);
+					b--; 
+				}
+				else if (D <= row - 1 && !map[D][c]) {
+					next = path[D][c];
+					map[D][c] = 1;
+					last.push(next);
+					footprint.push_back(next);
+					b--;
+				}
+				else if (R <= col - 1 && !map[r][R]) {
+					next = path[r][R];
+					map[r][R] = 1;
+					last.push(next);
+					footprint.push_back(next);
+					b--;
+				}
 				// deadend
 				else {
 					while (deadend(last.top()) && last.size() > 1) {
@@ -273,7 +294,6 @@ public:
 			wayhome = path[r][L]->distance;
 		else if (R <= col - 1 && !map[r][R])
 			wayhome = path[r][R]->distance;
-
 		if (b - wayhome > 0) return true;
 		else return false;
 	};
@@ -302,7 +322,7 @@ public:
 
 int main(int argc, char* argv[]) {
 	if (argc != 2)
-		input.open("Testcase/1/floor.data", ios::in);
+		input.open("floor.data", ios::in);
 	else {
 		stringstream strin;
 		strin << argv[1];
