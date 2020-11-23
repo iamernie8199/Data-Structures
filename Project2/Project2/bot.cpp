@@ -28,6 +28,11 @@ private:
 	int** map; // visited
 public:
 	Robot(int M, int N, int B, char** input) :row(M), col(N), battery(B) {
+		/*
+		2: wall
+		1: visited
+		0: unvisited
+		*/
 		map = new int* [M];
 		for (int i = 0; i < M; i++) {
 			map[i] = new int[N];
@@ -45,6 +50,14 @@ public:
 			}
 		}
 	}
+	bool done() {
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < col; j++) {
+				if (map[i][j] == 0) return false;
+			}
+		}
+		return true;
+	};
 };
 
 int main(int argc, char* argv[]) {
