@@ -93,6 +93,15 @@ public:
 			}
 		}
 	};
+	void print() {
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < col;j++) {
+				cout << map[i][j];
+			}
+			cout << endl;
+		}
+		cout << endl;
+	}
 	Node*** bfs_tree(Node* root) {
 		copymap();
 		queue<Node*> bfs;
@@ -148,7 +157,7 @@ public:
 		int b = battery;
 		while (!done()) {
 			if (b < 0)  break;
-
+			print();
 			Node* now = last.top();
 			int r = now->row;
 			int c = now->col;
@@ -185,7 +194,7 @@ public:
 					b--;
 				}
 				else {
-					while (deadend(last.top()) && last.size() > 1){
+					while (deadend(last.top()) && last.size() > 1) {
 						footprint.push(last.top());
 						b--;
 						last.pop();
@@ -195,6 +204,9 @@ public:
 			else {
 				back(path[now->row][now->col], root);
 				b = battery;
+				while (!last.empty())
+					last.pop();
+				last.push(root);
 			}
 		}
 		back(path[last.top()->row][last.top()->col], root);
