@@ -40,6 +40,7 @@ private:
 	Node*** path;
 	stack<Node*> last;
 	queue<Node*> footprint;
+	int** efficiency;
 public:
 	Robot(int M, int N, int B, char** input) :row(M), col(N), battery(B) {
 		/*
@@ -52,15 +53,18 @@ public:
 		map = new int* [M];
 		mapb = new bool* [M];
 		mapb_ = new bool* [M];
+		efficiency = new int* [M];
 		for (int i = 0; i < M; i++) {
 			map[i] = new int[N];
 			mapb[i] = new bool[N];
 			mapb_[i] = new bool[N];
+			efficiency[i] = new int[N];
 			for (int j = 0; j < N; j++) {
 				if (input[i][j] == 'R') {
 					map[i][j] = 1;
 					mapb[i][j] = true;
 					root = new Node(i, j, 0);
+					efficiency[i][j] = 0;
 
 					last.push(root);
 					footprint.push(root);
@@ -72,6 +76,7 @@ public:
 				else {
 					map[i][j] = 0;
 					mapb[i][j] = true;
+					efficiency[i][j] = 0;
 				}
 			}
 		}
@@ -157,7 +162,7 @@ public:
 		int b = battery;
 		while (!done()) {
 			if (b < 0)  break;
-			print();
+			//print();
 			Node* now = last.top();
 			int r = now->row;
 			int c = now->col;
@@ -193,6 +198,7 @@ public:
 					footprint.push(next);
 					b--;
 				}
+				// deadend
 				else {
 					while (deadend(last.top()) && last.size() > 1) {
 						footprint.push(last.top());
@@ -201,27 +207,17 @@ public:
 					}
 				}
 			}
-			else if (last.size() == 1 && footprint.size() > 1) {
-				int x, y;
-				for (int i = 0; i < row; i++) {
-					for (int j = 0; j < col; j++) {
-						if (map[i][j] == 0) {
-							x = i;
-							y = j;
-							break;
-						}
-					}
-				}
-				Node* tmp = path[x][y];
-				go(tmp, root);
-				b -= tmp->weight;
-			}
+
 			else {
 				back(path[now->row][now->col], root);
 				b = battery;
 				while (!last.empty())
 					last.pop();
 				last.push(root);
+				Node* best = optimum(root);
+				go(path[best->row][best->col], root);
+				last.push(best);
+				b -= path[best->row][best->col]->weight;
 			}
 		}
 		back(path[last.top()->row][last.top()->col], root);
@@ -239,6 +235,35 @@ public:
 			last.push(s.top());
 			s.pop();
 		}
+	};
+	Node* optimum(Node* current) {
+		// return the best option
+		int best = 0;
+		int x = root->row;
+		int y = root->col;
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < col; j++) {
+				if (map[i][j] == 0) {
+					efficiency[i][j] = zeros(i, j);
+					if (efficiency[i][j] > best) {
+						best = efficiency[i][j];
+						x = i;
+						y = j;
+					}
+				}
+			}
+		}
+		Node* bestoption = new Node(x, y, 0);
+		return bestoption;
+	};
+	int zeros(int i, int j) {
+		int zero = 0;
+		Node* tmp = path[i][j];
+		while (tmp != root) {
+			if (map[tmp->row][tmp->col] == 0) zero++;
+			tmp = tmp->parent;
+		}
+		return zero;
 	};
 	bool enough(Node* now, int b) {
 		int r = now->row;
@@ -282,7 +307,7 @@ public:
 
 int main(int argc, char* argv[]) {
 	if (argc != 2)
-		input.open("Testcase/2/floor.data", ios::in);
+		input.open("Testcase/1/floor.data", ios::in);
 	else {
 		stringstream strin;
 		strin << argv[1];
