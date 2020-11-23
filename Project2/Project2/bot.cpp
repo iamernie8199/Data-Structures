@@ -149,6 +149,7 @@ public:
 		}
 		return path;
 	};
+	int steps() { return footprint.size() - 1; }
 	void out(ofstream& outFile) {
 		while (!footprint.empty()) {
 			outFile << footprint.front()->row << " " << footprint.front()->col << endl;
