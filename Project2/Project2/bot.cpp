@@ -21,6 +21,32 @@ struct Node {
 	}
 };
 
+class Robot {
+private:
+	Node* root;
+	int row, col, battery;
+	int** map; // visited
+public:
+	Robot(int M, int N, int B, char** input) :row(M), col(N), battery(B) {
+		map = new int* [M];
+		for (int i = 0; i < M; i++) {
+			map[i] = new int[N];
+			for (int j = 0; j < N; j++) {
+				if (input[i][j] == 'R') {
+					map[i][j] = 1;
+					root = new Node(i, j, 0);
+				}
+				else if (input[i][j] == '1') {
+					map[i][j] = 2;
+				}
+				else {
+					map[i][j] = 0;
+				}
+			}
+		}
+	}
+};
+
 int main(int argc, char* argv[]) {
 	if (argc != 2)
 		input.open("Testcase/1/floor.data", ios::in);
@@ -48,6 +74,6 @@ int main(int argc, char* argv[]) {
 			input >> map[i][j];
 		}
 	}
-	
+
 	return 0;
 }
