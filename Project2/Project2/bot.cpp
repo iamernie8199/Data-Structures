@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <queue>
 
 
 using namespace std;
@@ -31,26 +32,37 @@ private:
 	Node* root;
 	int row, col, battery;
 	int** map; // visited
+	bool** mapb; // bool map
+	bool** mapb_;
 public:
 	Robot(int M, int N, int B, char** input) :row(M), col(N), battery(B) {
 		/*
 		2: wall
 		1: visited
 		0: unvisited
+		T: reachable
+		F: unreachable
 		*/
 		map = new int* [M];
+		mapb = new bool* [M];
+		mapb_ = new bool* [M];
 		for (int i = 0; i < M; i++) {
 			map[i] = new int[N];
+			mapb[i] = new bool[N];
+			mapb_[i] = new bool[N];
 			for (int j = 0; j < N; j++) {
 				if (input[i][j] == 'R') {
 					map[i][j] = 1;
+					mapb[i][j] = true;
 					root = new Node(i, j, 0);
 				}
 				else if (input[i][j] == '1') {
 					map[i][j] = 2;
+					mapb[i][j] = false;
 				}
 				else {
 					map[i][j] = 0;
+					mapb[i][j] = true;
 				}
 			}
 		}
@@ -63,7 +75,7 @@ public:
 		}
 		return true;
 	};
-	bool Deadend(Node* tmp) {
+	bool deadend(Node* tmp) {
 		int r = tmp->row;
 		int c = tmp->col;
 		if (U >= 0 && !map[U][c]) return false;
@@ -71,6 +83,13 @@ public:
 		if (L >= 0 && !map[r][L]) return false;
 		if (R <= col - 1 && !map[r][R]) return false;
 		return true;
+	};
+	void copymap() {
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < col; j++) {
+				mapb_[i][j] = mapb[i][j];
+			}
+		}
 	};
 };
 
