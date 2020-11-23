@@ -8,6 +8,19 @@ using namespace std;
 ifstream input;
 ofstream output;
 
+struct Node {
+	int row;
+	int col;
+	Node* parent; // used in shortest-path
+	Node(int r, int c, int d) :row(r), col(c), parent(0) {}
+	Node operator=(Node* n) {
+		this->row = n->row;
+		this->col = n->col;
+		this->parent = n->parent;
+		return *this;
+	}
+};
+
 int main(int argc, char* argv[]) {
 	if (argc != 2)
 		input.open("Testcase/1/floor.data", ios::in);
@@ -35,6 +48,6 @@ int main(int argc, char* argv[]) {
 			input >> map[i][j];
 		}
 	}
-
+	
 	return 0;
 }
