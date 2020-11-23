@@ -58,6 +58,15 @@ public:
 		}
 		return true;
 	};
+	bool Deadend(Node* tmp) {
+		int r = tmp->row;
+		int c = tmp->col;
+		if (r - 1 >= 0 && map[r - 1][c] == 0) return false;
+		if (r + 1 <= row - 1 && map[r + 1][c] == 0) return false;
+		if (c - 1 >= 0 && map[r][c - 1] == 0) return false;
+		if (c + 1 <= col - 1 && map[r][c + 1] == 0) return false;
+		return true;
+	};
 };
 
 int main(int argc, char* argv[]) {
