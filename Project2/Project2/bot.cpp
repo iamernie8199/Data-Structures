@@ -107,17 +107,6 @@ public:
 		}
 		cout << endl;
 	}
-	int up(int r, int c) {
-		Node* next;
-		if (U >= 0 && !map[U][c]) {
-			next = path[U][c];
-			map[U][c] = 1;
-			last.push(next);
-			footprint.push_back(next);
-			return 1;
-		}
-		return 0;
-	}
 	Node*** bfs_tree(Node* root) {
 		copymap();
 		queue<Node*> bfs;
