@@ -107,15 +107,6 @@ public:
 		}
 		cout << endl;
 	}
-	int direction(Node* now, Node* prev) {
-		// 0 to 3, mapped to 0 - 270 degrees
-		int y = now->row - prev->row;
-		int x = now->col - prev->col;
-		if (x == 1) return 0;
-		if (y == 1) return 1;
-		if (x == -1) return 2;
-		if (y == -1) return 3;
-	}
 	int up(int r, int c) {
 		Node* next;
 		if (U >= 0 && !map[U][c]) {
