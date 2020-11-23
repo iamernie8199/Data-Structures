@@ -17,11 +17,13 @@ ofstream output;
 struct Node {
 	int row;
 	int col;
+	int weight; // steps needed from root
 	Node* parent; // used in shortest-path
-	Node(int r, int c, int d) :row(r), col(c), parent(0) {}
+	Node(int r, int c, int d) :row(r), col(c), weight(d), parent(0) {}
 	Node operator=(Node* n) {
 		this->row = n->row;
 		this->col = n->col;
+		this->weight = n->weight;
 		this->parent = n->parent;
 		return *this;
 	}
@@ -34,6 +36,7 @@ private:
 	int** map; // visited
 	bool** mapb; // bool map
 	bool** mapb_;
+	Node*** path;
 public:
 	Robot(int M, int N, int B, char** input) :row(M), col(N), battery(B) {
 		/*
@@ -66,6 +69,7 @@ public:
 				}
 			}
 		}
+		bfs_tree(root);
 	}
 	bool done() {
 		for (int i = 0; i < row; i++) {
@@ -90,6 +94,57 @@ public:
 				mapb_[i][j] = mapb[i][j];
 			}
 		}
+	};
+	Node*** bfs_tree(Node* root) {
+		copymap();
+		queue<Node*> bfs;
+		path = new Node * *[row];
+		for (int i = 0; i < row; i++) {
+			path[i] = new Node * [col];
+			for (int j = 0; j < col; j++) {
+				path[i][j] = NULL;
+			}
+		}
+		path[root->row][root->col] = root;
+		path[root->row][root->col]->weight = 0;
+
+		bfs.push(root);
+		while (!bfs.empty()) {
+			Node* cur = bfs.front();
+			int r = cur->row;
+			int c = cur->col;
+			mapb_[r][c] = false;
+			bfs.pop();
+			if (U >= 0 && mapb_[U][c] == true) {
+				Node* up = new Node(U, c, cur->weight + 1);
+				mapb_[U][c] = false;
+				up->parent = cur;
+				path[U][c] = up;
+				bfs.push(up);
+			}
+			if (D <= row - 1 && mapb_[D][c] == true) {
+				Node* down = new Node(D, c, cur->weight + 1);
+				mapb_[D][c] = false;
+				down->parent = cur;
+				path[D][c] = down;
+				bfs.push(down);
+			}
+			if (L >= 0 && mapb_[r][L] == true) {
+				Node* left = new Node(r, L, cur->weight + 1);
+				mapb_[r][L] = false;
+				left->parent = cur;
+				path[r][L] = left;
+				bfs.push(left);
+			}
+			if (R <= col - 1 && mapb_[r][R] == true) {
+				Node* right = new Node(r, R, cur->weight + 1);
+				mapb_[r][R] = false;
+				right->parent = cur;
+				path[r][R] = right;
+				bfs.push(right);
+			}
+		}
+		return path;
 	};
 };
 
