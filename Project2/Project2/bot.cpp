@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <queue>
+#include <stack>
 
 
 using namespace std;
@@ -37,6 +38,7 @@ private:
 	bool** mapb; // bool map
 	bool** mapb_;
 	Node*** path;
+	stack<Node*> last;
 	queue<Node*> footprint;
 public:
 	Robot(int M, int N, int B, char** input) :row(M), col(N), battery(B) {
@@ -60,6 +62,7 @@ public:
 					mapb[i][j] = true;
 					root = new Node(i, j, 0);
 
+					last.push(root);
 					footprint.push(root);
 				}
 				else if (input[i][j] == '1') {
@@ -141,6 +144,66 @@ public:
 		}
 		return path;
 	};
+	void sweep() {
+		int b = battery;
+		while (!done()) {
+			if (b < 0)  break;
+
+			Node* now = last.top();
+			int r = now->row;
+			int c = now->col;
+			int w = now->weight;
+
+			if (enough(now, b)) {
+				Node* next;
+				if (U >= 0 && !map[U][c]) {
+					next = path[U][c];
+					map[U][c] = 1;
+					last.push(next);
+					footprint.push(next);
+					b--;
+				}
+				else if (D <= row - 1 && !map[D][c]) {
+					next = path[D][c];
+					map[D][c] = 1;
+					last.push(next);
+					footprint.push(next);
+					b--;
+				}
+				else if (L >= 0 && !map[r][L]) {
+					next = path[r][L];
+					map[r][L] = 1;
+					last.push(next);
+					footprint.push(next);
+					b--;
+				}
+				else if (R <= col - 1 && !map[r][R]) {
+					next = path[r][R];
+					map[r][R] = 1;
+					last.push(next);
+					footprint.push(next);
+					b--;
+				}
+			}
+
+		}
+	};
+	bool enough(Node* now, int b) {
+		int r = now->row;
+		int c = now->col;
+		int wayhome = battery;
+		if (U >= 0 && !map[U][c])
+			wayhome = path[U][c]->weight;
+		else if (D <= row - 1 && !map[D][c])
+			wayhome = path[D][c]->weight;
+		else if (L >= 0 && !map[r][L])
+			wayhome = path[r][L]->weight;
+		else if (R <= col - 1 && !map[r][R])
+			wayhome = path[r][R]->weight;
+
+		if (b - wayhome > 0) return true;
+		else return false;
+	};
 	void back(Node* tmp, Node* root) {
 		while (tmp != root) {
 			tmp = tmp->parent;
@@ -192,6 +255,9 @@ int main(int argc, char* argv[]) {
 			input >> map[i][j];
 		}
 	}
-
+	Robot robot(M, N, B, map);
+	robot.sweep();
+	output << robot.steps() << endl;
+	robot.out(output);
 	return 0;
 }
