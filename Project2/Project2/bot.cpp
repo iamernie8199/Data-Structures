@@ -8,6 +8,11 @@ using namespace std;
 ifstream input;
 ofstream output;
 
+#define U (r - 1)
+#define D (r + 1)
+#define L (c - 1)
+#define R (c + 1)
+
 struct Node {
 	int row;
 	int col;
@@ -53,7 +58,7 @@ public:
 	bool done() {
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < col; j++) {
-				if (map[i][j] == 0) return false;
+				if (!map[i][j]) return false;
 			}
 		}
 		return true;
@@ -61,10 +66,10 @@ public:
 	bool Deadend(Node* tmp) {
 		int r = tmp->row;
 		int c = tmp->col;
-		if (r - 1 >= 0 && map[r - 1][c] == 0) return false;
-		if (r + 1 <= row - 1 && map[r + 1][c] == 0) return false;
-		if (c - 1 >= 0 && map[r][c - 1] == 0) return false;
-		if (c + 1 <= col - 1 && map[r][c + 1] == 0) return false;
+		if (U >= 0 && !map[U][c]) return false;
+		if (D <= row - 1 && !map[D][c]) return false;
+		if (L >= 0 && !map[r][L]) return false;
+		if (R <= col - 1 && !map[r][R]) return false;
 		return true;
 	};
 };
