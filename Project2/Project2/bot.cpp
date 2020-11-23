@@ -18,13 +18,13 @@ ofstream output;
 struct Node {
 	int row;
 	int col;
-	int weight; // steps needed from root
+	int distance; // steps needed from root
 	Node* parent; // used in shortest-path
-	Node(int r, int c, int d) :row(r), col(c), weight(d), parent(0) {}
+	Node(int r, int c, int d) :row(r), col(c), distance(d), parent(0) {}
 	Node operator=(Node* n) {
 		this->row = n->row;
 		this->col = n->col;
-		this->weight = n->weight;
+		this->distance = n->distance;
 		this->parent = n->parent;
 		return *this;
 	}
@@ -107,6 +107,26 @@ public:
 		}
 		cout << endl;
 	}
+	int direction(Node* now, Node* prev) {
+		// 0 to 3, mapped to 0 - 270 degrees
+		int y = now->row - prev->row;
+		int x = now->col - prev->col;
+		if (x == 1) return 0;
+		if (y == 1) return 1;
+		if (x == -1) return 2;
+		if (y == -1) return 3;
+	}
+	int up(int r, int c) {
+		Node* next;
+		if (U >= 0 && !map[U][c]) {
+			next = path[U][c];
+			map[U][c] = 1;
+			last.push(next);
+			footprint.push(next);
+			return 1;
+		}
+		return 0;
+	}
 	Node*** bfs_tree(Node* root) {
 		copymap();
 		queue<Node*> bfs;
@@ -118,7 +138,7 @@ public:
 			}
 		}
 		path[root->row][root->col] = root;
-		path[root->row][root->col]->weight = 0;
+		path[root->row][root->col]->distance = 0;
 
 		bfs.push(root);
 		while (!bfs.empty()) {
@@ -128,28 +148,28 @@ public:
 			mapb_[r][c] = false;
 			bfs.pop();
 			if (U >= 0 && mapb_[U][c] == true) {
-				Node* up = new Node(U, c, cur->weight + 1);
+				Node* up = new Node(U, c, cur->distance + 1);
 				mapb_[U][c] = false;
 				up->parent = cur;
 				path[U][c] = up;
 				bfs.push(up);
 			}
 			if (D <= row - 1 && mapb_[D][c] == true) {
-				Node* down = new Node(D, c, cur->weight + 1);
+				Node* down = new Node(D, c, cur->distance + 1);
 				mapb_[D][c] = false;
 				down->parent = cur;
 				path[D][c] = down;
 				bfs.push(down);
 			}
 			if (L >= 0 && mapb_[r][L] == true) {
-				Node* left = new Node(r, L, cur->weight + 1);
+				Node* left = new Node(r, L, cur->distance + 1);
 				mapb_[r][L] = false;
 				left->parent = cur;
 				path[r][L] = left;
 				bfs.push(left);
 			}
 			if (R <= col - 1 && mapb_[r][R] == true) {
-				Node* right = new Node(r, R, cur->weight + 1);
+				Node* right = new Node(r, R, cur->distance + 1);
 				mapb_[r][R] = false;
 				right->parent = cur;
 				path[r][R] = right;
@@ -166,38 +186,16 @@ public:
 			Node* now = last.top();
 			int r = now->row;
 			int c = now->col;
-			int w = now->weight;
+			int w = now->distance;
 
 			if (enough(now, b)) {
 				Node* next;
-				if (U >= 0 && !map[U][c]) {
-					next = path[U][c];
-					map[U][c] = 1;
-					last.push(next);
-					footprint.push(next);
-					b--;
-				}
-				else if (D <= row - 1 && !map[D][c]) {
-					next = path[D][c];
-					map[D][c] = 1;
-					last.push(next);
-					footprint.push(next);
-					b--;
-				}
-				else if (L >= 0 && !map[r][L]) {
-					next = path[r][L];
-					map[r][L] = 1;
-					last.push(next);
-					footprint.push(next);
-					b--;
-				}
-				else if (R <= col - 1 && !map[r][R]) {
-					next = path[r][R];
-					map[r][R] = 1;
-					last.push(next);
-					footprint.push(next);
-					b--;
-				}
+
+				if (U >= 0 && !map[U][c]) {next = path[U][c];map[U][c] = 1;last.push(next);footprint.push(next);b--;}
+				else if (L >= 0 && !map[r][L]) { next = path[r][L];map[r][L] = 1;last.push(next);footprint.push(next);b--; }
+				else if (D <= row - 1 && !map[D][c]) {next = path[D][c];map[D][c] = 1;last.push(next);footprint.push(next);b--;}
+				else if (R <= col - 1 && !map[r][R]) {next = path[r][R];map[r][R] = 1;last.push(next);footprint.push(next);b--;}
+
 				// deadend
 				else {
 					while (deadend(last.top()) && last.size() > 1) {
@@ -207,7 +205,6 @@ public:
 					}
 				}
 			}
-
 			else {
 				back(path[now->row][now->col], root);
 				b = battery;
@@ -217,7 +214,7 @@ public:
 				Node* best = optimum(root);
 				go(path[best->row][best->col], root);
 				last.push(best);
-				b -= path[best->row][best->col]->weight;
+				b -= path[best->row][best->col]->distance;
 			}
 		}
 		back(path[last.top()->row][last.top()->col], root);
@@ -237,7 +234,6 @@ public:
 		}
 	};
 	Node* optimum(Node* current) {
-		// return the best option
 		int best = 0;
 		int x = root->row;
 		int y = root->col;
@@ -270,13 +266,13 @@ public:
 		int c = now->col;
 		int wayhome = battery;
 		if (U >= 0 && !map[U][c])
-			wayhome = path[U][c]->weight;
+			wayhome = path[U][c]->distance;
 		else if (D <= row - 1 && !map[D][c])
-			wayhome = path[D][c]->weight;
+			wayhome = path[D][c]->distance;
 		else if (L >= 0 && !map[r][L])
-			wayhome = path[r][L]->weight;
+			wayhome = path[r][L]->distance;
 		else if (R <= col - 1 && !map[r][R])
-			wayhome = path[r][R]->weight;
+			wayhome = path[r][R]->distance;
 
 		if (b - wayhome > 0) return true;
 		else return false;
