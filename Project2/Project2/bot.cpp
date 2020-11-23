@@ -4,6 +4,7 @@
 #include <string>
 #include <queue>
 #include <stack>
+#include <vector>
 
 
 using namespace std;
@@ -34,9 +35,8 @@ class Robot {
 private:
 	Node* root;
 	int row, col, battery;
-	int** map; // visited
-	bool** mapb; // bool map
-	bool** mapb_;
+	vector<vector<int>> map; // visited
+	vector<vector<bool>> mapb; // bool map
 	Node*** path;
 	stack<Node*> last;
 	vector<Node*> footprint;
@@ -50,14 +50,11 @@ public:
 		T: reachable
 		F: unreachable
 		*/
-		map = new int* [M];
-		mapb = new bool* [M];
-		mapb_ = new bool* [M];
+		map.resize(M, vector<int>(N, 0));
+		mapb.resize(M, vector<bool>(N, 0));
 		efficiency = new int* [M];
 		for (int i = 0; i < M; i++) {
-			map[i] = new int[N];
-			mapb[i] = new bool[N];
-			mapb_[i] = new bool[N];
+			//map[i] = new int[N];
 			efficiency[i] = new int[N];
 			for (int j = 0; j < N; j++) {
 				if (input[i][j] == 'R') {
@@ -65,7 +62,6 @@ public:
 					mapb[i][j] = true;
 					root = new Node(i, j, 0);
 					efficiency[i][j] = 0;
-
 					last.push(root);
 					footprint.push_back(root);
 				}
@@ -91,13 +87,6 @@ public:
 		if (R <= col - 1 && !map[r][R]) return false;
 		return true;
 	};
-	void copymap() {
-		for (int i = 0; i < row; i++) {
-			for (int j = 0; j < col; j++) {
-				mapb_[i][j] = mapb[i][j];
-			}
-		}
-	};
 	void print() {
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < col;j++) {
@@ -108,7 +97,6 @@ public:
 		cout << endl;
 	}
 	Node*** bfs_tree(Node* root) {
-		copymap();
 		queue<Node*> bfs;
 		path = new Node * *[row];
 		for (int i = 0; i < row; i++) {
@@ -125,32 +113,32 @@ public:
 			Node* cur = bfs.front();
 			int r = cur->row;
 			int c = cur->col;
-			mapb_[r][c] = false;
+			mapb[r][c] = false;
 			bfs.pop();
-			if (U >= 0 && mapb_[U][c] == true) {
+			if (U >= 0 && mapb[U][c] == true) {
 				Node* up = new Node(U, c, cur->distance + 1);
-				mapb_[U][c] = false;
+				mapb[U][c] = false;
 				up->parent = cur;
 				path[U][c] = up;
 				bfs.push(up);
 			}
-			if (D <= row - 1 && mapb_[D][c] == true) {
+			if (D <= row - 1 && mapb[D][c] == true) {
 				Node* down = new Node(D, c, cur->distance + 1);
-				mapb_[D][c] = false;
+				mapb[D][c] = false;
 				down->parent = cur;
 				path[D][c] = down;
 				bfs.push(down);
 			}
-			if (L >= 0 && mapb_[r][L] == true) {
+			if (L >= 0 && mapb[r][L] == true) {
 				Node* left = new Node(r, L, cur->distance + 1);
-				mapb_[r][L] = false;
+				mapb[r][L] = false;
 				left->parent = cur;
 				path[r][L] = left;
 				bfs.push(left);
 			}
-			if (R <= col - 1 && mapb_[r][R] == true) {
+			if (R <= col - 1 && mapb[r][R] == true) {
 				Node* right = new Node(r, R, cur->distance + 1);
-				mapb_[r][R] = false;
+				mapb[r][R] = false;
 				right->parent = cur;
 				path[r][R] = right;
 				bfs.push(right);
@@ -285,6 +273,7 @@ public:
 		}
 	};
 	bool done() {
+		vector<int> clean(col, 1);
 		for (int i = 0; i < row; i++) {
 			for (int j = 0; j < col; j++) {
 				if (!map[i][j]) return false;
