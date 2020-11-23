@@ -3,8 +3,7 @@
 #include <fstream>
 using namespace std;
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 	ifstream floor, path;
 	stringstream strfloor, strpath;
 	if (argc != 2) strfloor << "floor.data";
@@ -70,6 +69,7 @@ int main(int argc, char* argv[])
 		}
 		map[nowi][nowj] = 'D';
 	}
+	
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
 			if (map[i][j] == '0') {
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 		cout << step << " " << step_count-1 << endl;
 		return 1;
 	}
-	cout << "PASS!!CONGRATS!!\n";
+	cout << "PASS!!\n";
 	return 0;
 
 }
