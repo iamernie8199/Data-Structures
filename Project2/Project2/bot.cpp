@@ -74,14 +74,6 @@ public:
 		}
 		bfs_tree(root);
 	}
-	bool done() {
-		for (int i = 0; i < row; i++) {
-			for (int j = 0; j < col; j++) {
-				if (!map[i][j]) return false;
-			}
-		}
-		return true;
-	};
 	bool deadend(Node* tmp) {
 		int r = tmp->row;
 		int c = tmp->col;
@@ -148,6 +140,21 @@ public:
 			}
 		}
 		return path;
+	};
+	void back(Node* tmp, Node* root) {
+		while (tmp != root) {
+			tmp = tmp->parent;
+			footprint.push(tmp);
+			map[tmp->row][tmp->col] = 1;
+		}
+	};
+	bool done() {
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < col; j++) {
+				if (!map[i][j]) return false;
+			}
+		}
+		return true;
 	};
 	int steps() { return footprint.size() - 1; }
 	void out(ofstream& outFile) {
