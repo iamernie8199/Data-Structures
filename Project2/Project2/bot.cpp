@@ -201,6 +201,21 @@ public:
 					}
 				}
 			}
+			else if (last.size() == 1 && footprint.size() > 1) {
+				int x, y;
+				for (int i = 0; i < row; i++) {
+					for (int j = 0; j < col; j++) {
+						if (map[i][j] == 0) {
+							x = i;
+							y = j;
+							break;
+						}
+					}
+				}
+				Node* tmp = path[x][y];
+				go(tmp, root);
+				b -= tmp->weight;
+			}
 			else {
 				back(path[now->row][now->col], root);
 				b = battery;
@@ -211,6 +226,19 @@ public:
 		}
 		back(path[last.top()->row][last.top()->col], root);
 		cout << "Total: " << steps() << endl;
+	};
+	void go(Node* tmp, Node* from) {
+		stack<Node*> s;
+		while (tmp != from) {
+			s.push(tmp);
+			tmp = tmp->parent;
+		}
+		while (!s.empty()) {
+			footprint.push(s.top());
+			map[s.top()->row][s.top()->col] = 1;
+			last.push(s.top());
+			s.pop();
+		}
 	};
 	bool enough(Node* now, int b) {
 		int r = now->row;
