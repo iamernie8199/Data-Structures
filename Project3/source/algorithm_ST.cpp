@@ -25,13 +25,26 @@ using namespace std;
  * 4. The function that print out the current board statement
 *************************************************************************/
 
+int sgn(int n){
+    if(n == 0) return 0;
+    else return n/abs(n);
+}
+
 
 void algorithm_A(Board board, Player player, int index[]){
-    srand(time(NULL)*time(NULL));
     int row, col;
     int color = player.get_color();
-    
+    int corners[4][2] = {
+        {0,0},{0,5},{4,0},{4,5}
+    };
+    int i = 0;
     while(1){
+        if (i < 4){
+            row = corners[i][0];
+            col = corners[i][1];
+        }
+        i++;
+        if(board.get_cell_color(row, col) == 'w') break;
         row = rand() % 5;
         col = rand() % 6;
         if(board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
