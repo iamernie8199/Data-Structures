@@ -32,28 +32,26 @@ int sgn(int n){
 
 
 void algorithm_A(Board board, Player player, int index[]){
+    srand(time(NULL)*time(NULL));
     int row, col;
     int color = player.get_color();
     int corners[4][2] = {
         {0,0},{0,5},{4,0},{4,5}
     };
-    bool corner_checked = false;
-    if(!corner_checked){
-        for (int i = 0; i < 4; i++){
+    int i = 0;
+
+    while(1){
+        if(i<4){
             row = corners[i][0];
             col = corners[i][1];
-            if (i == 3) corner_checked = true;
-            if(board.get_cell_color(row, col) == 'w'){
-                break;
-            }
+            i++;
+            if(board.get_cell_color(row, col) == 'w') break;
         }
-    }
-    else{
-        while(1){
+        else{
             row = rand() % 5;
             col = rand() % 6;
-            if(board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
         }
+        if(board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
     }
 
     index[0] = row;
