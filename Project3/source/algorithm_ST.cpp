@@ -29,15 +29,8 @@ int sgn(int n){
     if(n == 0) return 0;
     else return n/abs(n);
 }
-/*
-template <class T> const T& max (const T& a, const T& b) {
-    return (a<b)?b:a;
-}
 
-template <class T> const T& min (const T& a, const T& b) {
-    return !(b<a)?a:b;
-}
-*/
+// return 2d array of the neighbors
 int** neighbors(int m, int n){ 
     int num;
     if ((m>0 && m<4) && (n>0 && n<5)) num = 8;
@@ -51,11 +44,15 @@ int** neighbors(int m, int n){
             neighbor[i] = new int[2];
             neighbor[i][0] = r;
             neighbor[i][1] = c;
-            cout << r << " " << c << ";";
             i++;
         }
     }
+    /*
+    for (int z = 0; z < num; z++){
+        cout << neighbor[z][0] << " " << neighbor[z][1] << ";";
+    }
     cout << endl;
+    */
     return neighbor;
 }
 
@@ -69,18 +66,32 @@ void algorithm_A(Board board, Player player, int index[]){
         {0,0},{0,5},{4,0},{4,5}
     };
     int i = 0;
-
+    bool dangerous = false;
     while(1){
         if(i<4){
             row = corners[i][0];
             col = corners[i][1];
-            if(board.get_cell_color(row, col) == 'w') break;
+            int** neighbor = neighbors(row,col);
+            if (board.get_cell_color(row, col) == 'w') break;
+            if (board.get_cell_color(row, col) == color){
+                for (int n = 0; n<3; n++){
+                    if(!(board.get_cell_color(neighbor[n][0], neighbor[n][1]) == color || board.get_cell_color(neighbor[n][0], neighbor[n][1]) == 'w')){
+                        int warning = board.get_capacity(neighbor[n][0], neighbor[n][1]);
+                        warning -= board.get_orbs_num(neighbor[n][0], neighbor[n][1]);
+                        if(warning <= 3-board.get_orbs_num(row, col)){
+                            dangerous = true;
+                            break;
+                        }
+                    }
+                }
+                if (dangerous) break;
+            }
             i++;
         }
         else{
             row = rand() % 5;
             col = rand() % 6;
-            if(board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
+            if (board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
         }
     }
 
