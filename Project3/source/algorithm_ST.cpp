@@ -29,6 +29,36 @@ int sgn(int n){
     if(n == 0) return 0;
     else return n/abs(n);
 }
+/*
+template <class T> const T& max (const T& a, const T& b) {
+    return (a<b)?b:a;
+}
+
+template <class T> const T& min (const T& a, const T& b) {
+    return !(b<a)?a:b;
+}
+*/
+int** neighbors(int m, int n){ 
+    int num;
+    if ((m>0 && m<4) && (n>0 && n<5)) num = 8;
+    else if((m==0&&n==0)||(m==0 && n==5)||(m==4 && n==0)||(m==4 && n==5)) num = 3;
+    else num = 5;
+    int** neighbor = new int*[num];
+    int i = 0;
+    for (int r = max(0, m-1); r <= min(m+1,4); r++){
+        for (int c = max(0,n-1); c <= min(n+1,5); c++){
+            if(r==m && c==n) continue;
+            neighbor[i] = new int[2];
+            neighbor[i][0] = r;
+            neighbor[i][1] = c;
+            cout << r << " " << c << ";";
+            i++;
+        }
+    }
+    cout << endl;
+    return neighbor;
+}
+
 
 
 void algorithm_A(Board board, Player player, int index[]){
@@ -44,15 +74,17 @@ void algorithm_A(Board board, Player player, int index[]){
         if(i<4){
             row = corners[i][0];
             col = corners[i][1];
-            i++;
             if(board.get_cell_color(row, col) == 'w') break;
+            i++;
         }
         else{
             row = rand() % 5;
             col = rand() % 6;
+            if(board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
         }
-        if(board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
     }
+
+    int** neighbor = neighbors(row,col);
 
     index[0] = row;
     index[1] = col;
