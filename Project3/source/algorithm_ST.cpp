@@ -86,16 +86,21 @@ void algorithm_A(Board board, Player player, int index[]){
                 }
                 if (dangerous) break;
             }
+            delete [] neighbor;
             i++;
         }
         else{
             row = rand() % 5;
             col = rand() % 6;
+            for (int i = 0; i < 4; i++){
+                while(row==corners[i][0] && col==corners[i][1]){
+                    row = rand() % 5;
+                    col = rand() % 6;
+                }
+            }
             if (board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
         }
     }
-
-    int** neighbor = neighbors(row,col);
 
     index[0] = row;
     index[1] = col;
