@@ -55,7 +55,28 @@ int** neighbors(int m, int n){
     return neighbor;
 }
 
+class node{
+    private:
+        Board state;
+    public:
+        node(Board board){
+            this->state = board;
+        }
+};
 
+class gametree{
+    private:
+        node *root;
+        Player *player;
+        Player *enemy;
+    public:
+        gametree(Board board, Player *player){
+            this->root = new node(board);
+            this->player = player;
+            if(player->get_color()=='r') this->enemy = new Player('b');
+            else this->enemy = new Player('r');
+        }
+};
 
 void algorithm_A(Board board, Player player, int index[]){
     srand(time(NULL)*time(NULL));
