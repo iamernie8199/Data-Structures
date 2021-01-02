@@ -25,6 +25,10 @@ using namespace std;
  * 4. The function that print out the current board statement
 *************************************************************************/
 
+int critical(Board board, int m, int n){
+    return board.get_capacity(m, n) - 1;
+}
+
 // return the # of the neighbors
 int near(int m, int n){ 
     if ((m > 0 && m < 4) && (n > 0 && n < 5)) return 8;
@@ -58,10 +62,14 @@ int** neighbors(int m, int n){
 class node{
     private:
         Board state;
+        int mn[2];
     public:
         node(Board board){
             this->state = board;
         }
+        Board get_board(){ return this->state;}
+        int get_row(){ return this->mn[0];}
+        int get_col(){ return this->mn[1];}
 };
 
 class gametree{
@@ -75,6 +83,46 @@ class gametree{
             this->player = player;
             if(player->get_color()=='r') this->enemy = new Player('b');
             else this->enemy = new Player('r');
+        }
+        int evaluator(node *n){
+            Board board = n->get_board();
+            char color = player->get_color();
+            char enemy_color = enemy->get_color();
+            int score = 0;
+            int orb = 0, enemy_orb = 0;
+            for (int i = 0; i < 5; i++){
+                for (int j = 0; j < 6; j++){
+                    if (board.get_cell_color(i,j)==enemy_color) enemy_orb += board.get_orbs_num(i,j);
+                    else if (board.get_cell_color(i,j)==color){
+                        orb += board.get_orbs_num(i,j);
+                        bool safe = true;
+                        int** neighbor = neighbors(i, j);
+                        int num = near(i, j);
+
+                        for (int z = 0; z < num; z++) {
+                            if((board.get_cell_color(neighbor[z][0], neighbor[z][1])==enemy_color)&&(board.get_orbs_num(neighbor[z][0], neighbor[z][1])==board.get_capacity(neighbor[z][0], neighbor[z][1])-1)){
+                                score -= 9 - board.get_capacity(i, j);
+                                safe = false;
+                            }
+                        }
+                        delete [] neighbor;
+
+                        // no enemy
+                        if (safe){
+                            // corner
+                            if (board.get_capacity(i, j) == 3) score += 6;
+                            // edge
+                            else if (board.get_capacity(i, j) == 5) score += 4;
+                            // unstability
+                            if (board.get_orbs_num(i, j) == board.get_capacity(i, j) - 1) score += 4;
+                        }
+                    } 
+                }
+            }
+            score += (orb-enemy_orb);
+            if (enemy_orb == 0 && orb > 1) return 10000;
+            else if (enemy_orb > 1 && orb == 0) return -10000;
+            else return score;
         }
 };
 
