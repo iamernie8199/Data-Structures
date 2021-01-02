@@ -25,17 +25,16 @@ using namespace std;
  * 4. The function that print out the current board statement
 *************************************************************************/
 
-int sgn(int n){
-    if(n == 0) return 0;
-    else return n/abs(n);
+// return the # of the neighbors
+int near(int m, int n){ 
+    if ((m > 0 && m < 4) && (n > 0 && n < 5)) return 8;
+    else if((m == 0 && n == 0)||(m == 0 && n == 5)||(m == 4 && n == 0)||(m == 4 && n == 5)) return 3;
+    else return 5;
 }
 
 // return 2d array of the neighbors
 int** neighbors(int m, int n){ 
-    int num;
-    if ((m>0 && m<4) && (n>0 && n<5)) num = 8;
-    else if((m==0&&n==0)||(m==0 && n==5)||(m==4 && n==0)||(m==4 && n==5)) num = 3;
-    else num = 5;
+    int num = near(m, n);
     int** neighbor = new int*[num];
     int i = 0;
     for (int r = max(0, m-1); r <= min(m+1,4); r++){
@@ -61,7 +60,7 @@ int** neighbors(int m, int n){
 void algorithm_A(Board board, Player player, int index[]){
     srand(time(NULL)*time(NULL));
     int row, col;
-    int color = player.get_color();
+    char color = player.get_color();
     int corners[4][2] = {
         {0,0},{0,5},{4,0},{4,5}
     };
