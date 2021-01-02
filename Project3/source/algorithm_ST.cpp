@@ -63,6 +63,7 @@ class node{
     private:
         Board state;
         int mn[2];
+        node *next;
     public:
         node(Board board){
             this->state = board;
@@ -70,6 +71,8 @@ class node{
         Board get_board(){ return this->state;}
         int get_row(){ return this->mn[0];}
         int get_col(){ return this->mn[1];}
+        void set_next(node* n){ this->next = n;}
+        node* get_next(){ return this->next;}
 };
 
 class gametree{
@@ -123,6 +126,17 @@ class gametree{
             if (enemy_orb == 0 && orb > 1) return 10000;
             else if (enemy_orb > 1 && orb == 0) return -10000;
             else return score;
+        }
+        node *best(){
+            int tmp_score = 0, best_score = 0;
+            node *tmp_node = this->root;
+            node *best_node = this->root;
+
+            if (tmp_score > best_score){
+                best_score = tmp_score;
+                best_node = tmp_node;
+            }
+            return best_node;
         }
 };
 
