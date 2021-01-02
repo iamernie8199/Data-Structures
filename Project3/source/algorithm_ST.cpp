@@ -289,12 +289,24 @@ void algorithm_A(Board board, Player player, int index[]){
                     col = rand() % 6;
                 }
             }
+            /*Board thisround = board;
+            thisround.place_orb(row,col,&player);
+            int score = evaluate(thisround, player);*/
             for(int i=0;i<ROW;i++){
                 for(int j=0;j<COL;j++){
                     if(board.get_cell_color(i,j)==color){
-                        if( (board.get_capacity(i,j)-board.get_orbs_num(i,j))<=4)
+                        Board tmpround = board;
+                        tmpround.place_orb(i,j,&player);
+                        int tmpscore = evaluate(tmpround, player);
+                        if (tmpscore==10000){
                             row=i;
                             col=j;
+                            //score = tmpscore;
+                        }
+                        /*if((board.get_capacity(i,j)-board.get_orbs_num(i,j))<=4){
+                            row=i;
+                            col=j;
+                        }*/
                     }
                 }
             }
