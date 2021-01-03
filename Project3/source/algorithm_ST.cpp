@@ -117,9 +117,9 @@ void algorithm_A(Board board, Player player, int index[]){
         if(i<4){
             row = corners[i][0];
             col = corners[i][1];
-            int** neighbor = neighbors(row,col);
             if (board.get_cell_color(row, col) == 'w') break;
             if (board.get_cell_color(row, col) == color){
+                int** neighbor = neighbors(row,col);
                 for (int n = 0; n<3; n++){
                     if(!(board.get_cell_color(neighbor[n][0], neighbor[n][1]) == color || board.get_cell_color(neighbor[n][0], neighbor[n][1]) == 'w')){
                         int warning = board.get_capacity(neighbor[n][0], neighbor[n][1]);
@@ -130,12 +130,12 @@ void algorithm_A(Board board, Player player, int index[]){
                         }
                     }
                 }
+                for (int n = 0; n<3; n++){
+                    delete [] neighbor[n];
+                }
+                delete [] neighbor;
                 if (dangerous) break;
             }
-            for (int n = 0; n<3; n++){
-                delete [] neighbor[n];
-            }
-            delete [] neighbor;
             i++;
         }
         else{
