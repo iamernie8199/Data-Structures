@@ -139,7 +139,7 @@ void algorithm_A(Board board, Player player, int index[]){
             i++;
         }
         else{
-            int score = 0;
+            int score = -10000;
             for(int i=0;i<ROW;i++){
                 for(int j=0;j<COL;j++){
                     if(board.get_cell_color(i,j)!=enemy_color){
