@@ -131,17 +131,6 @@ void algorithm_A(Board board, Player player, int index[]){
             i++;
         }
         else{
-            /*row = rand() % 5;
-            col = rand() % 6;
-            for (int i = 0; i < 4; i++){
-                while(row==corners[i][0] && col==corners[i][1]){
-                    row = rand() % 5;
-                    col = rand() % 6;
-                }
-            }
-            Board thisround = board;
-            thisround.place_orb(row,col,&player);
-            int score = evaluate(thisround, player);*/
             int score = 0;
             for(int i=0;i<ROW;i++){
                 for(int j=0;j<COL;j++){
@@ -149,14 +138,15 @@ void algorithm_A(Board board, Player player, int index[]){
                         Board tmpround = board;
                         tmpround.place_orb(i,j,&player);
                         int tmpscore = evaluate(tmpround, player);
-                        if (tmpscore>score){
+                        if (tmpscore==10000){
+                            row=i;
+                            col=j;
+                            break;
+                        }
+                        else if (tmpscore>score){
                             row=i;
                             col=j;
                             score = tmpscore;
-                        }
-                        else if(tmpscore==10000){
-                            row=i;
-                            col=j;
                         }
                     }
                 }
