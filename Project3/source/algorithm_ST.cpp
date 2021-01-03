@@ -76,6 +76,10 @@ int evaluate(Board board, Player player){
                         safe = false;
                     }
                 }
+
+                for (int z = 0; z < num; z++){
+                    delete [] neighbor[z];
+                }
                 delete [] neighbor;
 
                 // no enemy
@@ -93,7 +97,7 @@ int evaluate(Board board, Player player){
             }
         }
     }
-    score += my_orbs;
+    score += (my_orbs-enemy_orbs);
     if (enemy_orbs == 0 && my_orbs > 1) return 10000;
     if (enemy_orbs > 1 && my_orbs == 0) return -10000;
     return score;
@@ -103,6 +107,7 @@ void algorithm_A(Board board, Player player, int index[]){
     srand(time(NULL)*time(NULL));
     int row, col;
     char color = player.get_color();
+    char enemy_color=(color=='r')? 'b':'r';
     int corners[4][2] = {
         {0,0},{0,5},{4,0},{4,5}
     };
@@ -127,6 +132,9 @@ void algorithm_A(Board board, Player player, int index[]){
                 }
                 if (dangerous) break;
             }
+            for (int n = 0; n<3; n++){
+                delete [] neighbor[n];
+            }
             delete [] neighbor;
             i++;
         }
@@ -134,7 +142,7 @@ void algorithm_A(Board board, Player player, int index[]){
             int score = 0;
             for(int i=0;i<ROW;i++){
                 for(int j=0;j<COL;j++){
-                    if(board.get_cell_color(i,j)==color){
+                    if(board.get_cell_color(i,j)!=enemy_color){
                         Board tmpround = board;
                         tmpround.place_orb(i,j,&player);
                         int tmpscore = evaluate(tmpround, player);
